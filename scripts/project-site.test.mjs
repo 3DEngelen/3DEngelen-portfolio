@@ -180,7 +180,11 @@ test('builds a minimal project page and concise listing card', async (t) => {
   );
 
   await rm(join(site, 'projects'), { recursive: true, force: true });
-  await mkdir(join(site, 'projects'));
+  execFileSync('npm', ['run', 'check'], {
+    cwd: site,
+    env: { ...process.env, SITE_URL: 'https://example.com', BASE_PATH: '/' },
+    stdio: 'pipe',
+  });
   execFileSync('npm', ['run', 'build'], {
     cwd: site,
     env: { ...process.env, SITE_URL: 'https://example.com', BASE_PATH: '/' },

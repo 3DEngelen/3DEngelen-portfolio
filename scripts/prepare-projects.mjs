@@ -16,11 +16,14 @@ function fail(slug, detail) {
   throw new Error(`${slug}: ${detail}`);
 }
 
-const folders = (await readdir(source, { withFileTypes: true })).filter(
-  (entry) => entry.isDirectory(),
+const folders = await readdir(source, { withFileTypes: true }).catch(
+  (error) => {
+    if (error.code !== 'ENOENT') throw error;
+    return [];
+  },
 );
 await rm(output, { recursive: true, force: true });
-for (const folder of folders) {
+for (const folder of folders.filter((entry) => entry.isDirectory())) {
   const slug = folder.name;
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
     fail(slug, 'invalid folder slug');
