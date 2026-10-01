@@ -1,6 +1,6 @@
 # 3DEngelen
 
-A static portfolio for finished maker projects. The included **Demo / Fixture Study** is fictional example content, not a real project or test result.
+A static portfolio for finished maker projects. The fictional **Demo / Fixture Study** is kept under `scripts/fixtures/` for testing and is not published.
 
 ## Develop
 
@@ -12,44 +12,35 @@ Run `npm test` for focused project-image validation tests. The optional APM mani
 
 ## Add a project
 
-Create `projects/<project-slug>/project.md` and `projects/<project-slug>/pictures/`. Use lowercase letters, digits, and hyphens for the folder name; it becomes the URL. Do not put a slug in frontmatter. Add publication-ready JPG, PNG, WebP, AVIF, or SVG images to `pictures/`, named `01-...`, `02-...` etc. for a predictable alphabetical gallery. The hero must reference one of these images.
+Create `projects/<project-slug>/project.md` and `projects/<project-slug>/pictures/`. Use lowercase letters, digits, and hyphens for the folder name; it becomes the stable URL. Do not put a slug in frontmatter or edit a central project list. Publish completed builds, experiments, or prototypes only. Add selected, reasonably compressed JPG, PNG, WebP, AVIF, or SVG exports to `pictures/`, named `01-...`, `02-...` etc. for a predictable gallery. Keep raw originals and working files outside the repository. The hero must reference one of these images.
 
 ```md
 ---
 title: 'Project title'
-description: 'One sentence suitable for a card and search preview.'
-completed: '2026-01'
+description: 'One to ten sentences describing the finished work. Only the first sentence appears in project cards and social previews.'
 hero: 'pictures/01-hero.jpg'
-tags: ['Fabrication', 'Design']
-category: 'Optional category'
+featured: true
+tags: ['Fabrication', 'Workshop']
+printers: ['Printer model']
+materials:
+  - name: 'PETG'
+    brand: 'Optional brand'
+    grade: 'Optional grade'
 resources:
   - type: 'model'
     label: 'Model files'
     url: 'https://example.com/model'
 gallery:
   01-hero.jpg:
+    alt: 'A descriptive account of what the photo shows'
     caption: 'Optional image caption'
     order: 1
-seo:
-  title: 'Optional browser title'
-  description: 'Optional social description'
-  image: 'pictures/02-preview.jpg'
 ---
 
-## Goal
-
-What did you set out to make?
-
-## Result
-
-What was completed?
-
-## Takeaway
-
-What would another maker find useful?
+Optional Markdown notes can follow the description. No headings or completion date are required.
 ```
 
-Only the title, description, completion month (`YYYY-MM`), and hero are required. Headings in the body are suggestions, not a schema. Tags are trimmed, deduplicated, and lowercased for browsing; categories and resources are optional. Resource `type` is a free-form label (start with `model` or `material`). Gallery captions and order are optional; otherwise pictures sort by filename. `seo.image` must also be in `pictures/`. `npm run check` rejects invalid metadata, missing referenced images, and unsupported image files. Publish only complete standalone work; keep originals and working files outside this repository.
+Only title, a one-to-ten-sentence description, a hero image, and descriptive `alt` text for every project picture are required. Add one `gallery` entry per picture; its visible caption and order are optional. Completion month (`YYYY-MM`), featured status, printer models, materials, flat tags, resource links, and additional Markdown notes are optional. Tags are trimmed, deduplicated, and lowercased for browsing. Material entries can include a brand and grade. Resource `type` is a free-form label and each resource needs a label and URL. Gallery order defaults to filename order. Social/search metadata uses the title, first description sentence, canonical URL, and hero image by default; optional SEO overrides are supported. `npm run check` rejects invalid metadata, descriptions outside the sentence limit, missing alt text or image references, and unsupported image files.
 
 ## Deployment
 

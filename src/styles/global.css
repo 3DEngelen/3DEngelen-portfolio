@@ -444,14 +444,17 @@ figcaption {
 .project-meta strong {
   color: var(--text);
 }
-.resources {
+.resources,
+.project-details {
   margin-top: 3rem;
 }
-.resources ul {
+.resources ul,
+.project-details ul {
   list-style: none;
   padding: 0;
 }
-.resources li {
+.resources li,
+.project-details li {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;

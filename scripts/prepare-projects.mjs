@@ -16,11 +16,14 @@ function fail(slug, detail) {
   throw new Error(`${slug}: ${detail}`);
 }
 
-const folders = (await readdir(source, { withFileTypes: true })).filter(
-  (entry) => entry.isDirectory(),
+const folders = await readdir(source, { withFileTypes: true }).catch(
+  (error) => {
+    if (error.code !== 'ENOENT') throw error;
+    return [];
+  },
 );
 await rm(output, { recursive: true, force: true });
-for (const folder of folders) {
+for (const folder of folders.filter((entry) => entry.isDirectory())) {
   const slug = folder.name;
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
     fail(slug, 'invalid folder slug');
@@ -57,6 +60,17 @@ for (const folder of folders) {
     if (!filenames.includes(name))
       fail(slug, `gallery references missing image: ${name}`);
   }
+  const altTexts = Object.fromEntries(
+    filenames.map((name) => {
+      const alt = data.gallery?.[name]?.alt;
+      if (typeof alt !== 'string' || !alt.trim())
+        fail(
+          slug,
+          `missing descriptive alt text for pictures/${name}; add gallery.${name}.alt`,
+        );
+      return [name, alt.trim()];
+    }),
+  );
   const sorted = filenames.sort(
     (a, b) =>
       (data.gallery?.[a]?.order ?? Infinity) -
@@ -86,6 +100,7 @@ for (const folder of folders) {
           src: `generated/${slug}/${galleryFile}`,
           width: gallery.width,
           height: gallery.height,
+          alt: altTexts[name],
           ...(data.gallery?.[name]?.caption
             ? { caption: data.gallery[name].caption }
             : {}),
@@ -94,6 +109,7 @@ for (const folder of folders) {
           src: `generated/${slug}/${cardFile}`,
           width: card.width,
           height: card.height,
+          alt: altTexts[name],
         },
       };
     } catch (error) {

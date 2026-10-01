@@ -1,6 +1,11 @@
 ---
 import type { Project } from '../lib/projects';
-import { imageUrl, projectImages, projectUrl } from '../lib/projects';
+import {
+  imageUrl,
+  projectExcerpt,
+  projectImages,
+  projectUrl,
+} from '../lib/projects';
 
 interface Props {
   project: Project;
@@ -20,7 +25,7 @@ const image = projectImages(project).card;
         src={imageUrl(image.src)}
         width={image.width}
         height={image.height}
-        alt={project.data.title}
+        alt={image.alt}
         loading="lazy"
         decoding="async"
       />
@@ -30,9 +35,11 @@ const image = projectImages(project).card;
     </div>
     <div class="card-heading">
       <h3>{project.data.title}</h3>
-      <span class="year">{project.data.completed.slice(0, 4)}</span>
+      {project.data.completed && (
+        <span class="year">{project.data.completed.slice(0, 4)}</span>
+      )}
     </div>
-    <p>{project.data.description}</p>
+    <p>{projectExcerpt(project)}</p>
     <div class="tags" aria-label="Project tags">
       {project.data.tags.map((tag) => (
         <span class="tag">{tag}</span>

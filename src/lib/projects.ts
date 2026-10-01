@@ -1,11 +1,13 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import generated from '../generated/projects.json';
+import { projectDescriptionExcerpt } from './project-description';
 
 export type Project = CollectionEntry<'projects'>;
 export type GalleryImage = {
   src: string;
   width: number;
   height: number;
+  alt: string;
   caption?: string;
 };
 type ImageSet = {
@@ -25,9 +27,17 @@ export function projectImages(project: Project): ImageSet {
 export async function allProjects(): Promise<Project[]> {
   return (await getCollection('projects')).sort(
     (a, b) =>
-      b.data.completed.localeCompare(a.data.completed) ||
+      (b.data.completed ?? '').localeCompare(a.data.completed ?? '') ||
       a.id.localeCompare(b.id),
   );
+}
+
+export function projectExcerpt(project: Project): string {
+  return projectDescriptionExcerpt(project.data.description);
+}
+
+export function featuredProjects(projects: Project[]): Project[] {
+  return projects.filter((project) => project.data.featured).slice(0, 3);
 }
 
 export function projectUrl(project: Project): string {
