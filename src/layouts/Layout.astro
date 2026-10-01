@@ -29,40 +29,71 @@ const socialImage = image && new URL(imageUrl(image), Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {socialImage && <meta property="og:image" content={socialImage} />}
-    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta
+      name="twitter:card"
+      content={socialImage ? 'summary_large_image' : 'summary'}
+    />
     <script is:inline>
       try {
         const theme = localStorage.getItem('theme');
-        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        if (theme === 'light' || theme === 'dark')
+          document.documentElement.dataset.theme = theme;
       } catch {}
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
     <header class="site-header">
-      <a class="brand" href={import.meta.env.BASE_URL} aria-label="3DEngelen home">
-        <span class="brand-mark" aria-hidden="true">3D<span>✳</span></span>
-        <span>ENGELEN<span class="brand-suffix"> / WORKSHOP</span></span>
+      <a
+        class="brand"
+        href={import.meta.env.BASE_URL}
+        aria-label="3DEngelen home"
+      >
+        <span class="brand-mark" aria-hidden="true">
+          3D<span>✳</span>
+        </span>
+        <span>
+          ENGELEN<span class="brand-suffix"> / WORKSHOP</span>
+        </span>
       </a>
       <nav aria-label="Main navigation">
         <a href={`${import.meta.env.BASE_URL}projects/`}>Projects</a>
         <a href={`${import.meta.env.BASE_URL}about/`}>About</a>
-        <button class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
-          <span aria-hidden="true">◐</span><span class="theme-label"> Theme</span>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch color theme"
+          title="Switch color theme"
+        >
+          <span aria-hidden="true">◐</span>
+          <span class="theme-label"> Theme</span>
         </button>
       </nav>
     </header>
-    <main id="main"><slot /></main>
+    <main id="main">
+      <slot />
+    </main>
     <footer class="site-footer">
-      <span>3DEngelen <span class="muted">/ made to share</span></span>
-      <a href={`${import.meta.env.BASE_URL}about/`}>Contact <span aria-hidden="true">↗</span></a>
+      <span>
+        3DEngelen <span class="muted">/ made to share</span>
+      </span>
+      <a href={`${import.meta.env.BASE_URL}about/`}>
+        Contact <span aria-hidden="true">↗</span>
+      </a>
     </footer>
     <script>
       const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
       toggle?.addEventListener('click', () => {
         const current = document.documentElement.dataset.theme;
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const next = (current || (prefersDark ? 'dark' : 'light')) === 'dark' ? 'light' : 'dark';
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+        const next =
+          (current || (prefersDark ? 'dark' : 'light')) === 'dark'
+            ? 'light'
+            : 'dark';
         document.documentElement.dataset.theme = next;
         try {
           localStorage.setItem('theme', next);

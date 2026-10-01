@@ -7,6 +7,7 @@
     "prepare:projects": "node scripts/prepare-projects.mjs",
     "dev": "npm run prepare:projects && astro dev --host 0.0.0.0",
     "check": "npm run prepare:projects && astro check",
+    "test": "node --test scripts/*.test.mjs",
     "build": "npm run prepare:projects && astro build",
     "preview": "astro preview --host 0.0.0.0",
     "format:check": "prettier --check \"{src,scripts,projects}/**/*.{astro,css,js,mjs,json,md,ts}\" \"*.{json,md,mjs}\"",

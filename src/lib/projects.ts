@@ -2,8 +2,18 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import generated from '../generated/projects.json';
 
 export type Project = CollectionEntry<'projects'>;
-export type GalleryImage = { src: string; width: number; height: number; caption?: string };
-type ImageSet = { hero: GalleryImage; card: GalleryImage; gallery: GalleryImage[]; previews: Record<string, GalleryImage> };
+export type GalleryImage = {
+  src: string;
+  width: number;
+  height: number;
+  caption?: string;
+};
+type ImageSet = {
+  hero: GalleryImage;
+  card: GalleryImage;
+  gallery: GalleryImage[];
+  previews: Record<string, GalleryImage>;
+};
 const images = generated as Record<string, ImageSet>;
 
 export function projectImages(project: Project): ImageSet {
@@ -14,7 +24,9 @@ export function projectImages(project: Project): ImageSet {
 
 export async function allProjects(): Promise<Project[]> {
   return (await getCollection('projects')).sort(
-    (a, b) => b.data.completed.localeCompare(a.data.completed) || a.id.localeCompare(b.id),
+    (a, b) =>
+      b.data.completed.localeCompare(a.data.completed) ||
+      a.id.localeCompare(b.id),
   );
 }
 

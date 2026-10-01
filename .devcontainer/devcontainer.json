@@ -1,0 +1,12 @@
+{
+  "name": "3DEngelen Astro",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "postCreateCommand": "npm ci",
+  "forwardPorts": [4321],
+  "portsAttributes": {
+    "4321": {
+      "label": "Astro preview",
+      "onAutoForward": "openPreview"
+    }
+  }
+}

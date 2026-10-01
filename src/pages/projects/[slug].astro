@@ -25,40 +25,85 @@ const social = project.data.seo?.image
   type="article"
 >
   <article class="project-page section-shell">
-    <a class="back-link" href={`${import.meta.env.BASE_URL}projects/`}>← All projects</a>
+    <a class="back-link" href={`${import.meta.env.BASE_URL}projects/`}>
+      ← All projects
+    </a>
     <header class="project-header">
-      <p class="eyebrow">{project.data.category ?? 'PROJECT'} / {project.data.completed.slice(0, 4)}</p>
-      <h1>{project.data.title}<span class="accent">.</span></h1>
+      <p class="eyebrow">
+        {project.data.category ?? 'PROJECT'} /{' '}
+        {project.data.completed.slice(0, 4)}
+      </p>
+      <h1>
+        {project.data.title}
+        <span class="accent">.</span>
+      </h1>
       <p class="project-deck">{project.data.description}</p>
-      <div class="tags">{project.data.tags.map((tag) => <span class="tag">{tag}</span>)}</div>
+      <div class="tags">
+        {project.data.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
     </header>
     <figure class="project-hero">
-      <img src={imageUrl(images.hero.src)} width={images.hero.width} height={images.hero.height} alt={`Overview of ${project.data.title}`} fetchpriority="high" />
+      <img
+        src={imageUrl(images.hero.src)}
+        width={images.hero.width}
+        height={images.hero.height}
+        alt={images.hero.caption ?? project.data.title}
+        fetchpriority="high"
+      />
       {images.hero.caption && <figcaption>{images.hero.caption}</figcaption>}
     </figure>
     <div class="project-body">
       <div class="project-meta">
         <p class="eyebrow">PROJECT NOTES</p>
-        <p>Completed <strong>{project.data.completed.slice(0, 4)}</strong></p>
+        <p>
+          Completed <strong>{project.data.completed.slice(0, 4)}</strong>
+        </p>
         {project.data.resources.length > 0 && (
           <div class="resources">
             <p class="eyebrow">RESOURCES</p>
             <ul>
               {project.data.resources.map((resource) => (
-                <li><span>{resource.type}</span><a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.label} ↗</a></li>
+                <li>
+                  <span>{resource.type}</span>
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {resource.label} ↗
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
         )}
       </div>
-      <div class="prose"><Content /></div>
+      <div class="prose">
+        <Content />
+      </div>
     </div>
     <section class="gallery" aria-labelledby="gallery-title">
-      <div class="section-heading"><div><p class="eyebrow">A CLOSER LOOK</p><h2 id="gallery-title">Gallery<span class="accent">.</span></h2></div></div>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">A CLOSER LOOK</p>
+          <h2 id="gallery-title">
+            Gallery<span class="accent">.</span>
+          </h2>
+        </div>
+      </div>
       <div class="gallery-grid">
         {images.gallery.map((image, index) => (
           <figure>
-            <img src={imageUrl(image.src)} width={image.width} height={image.height} alt={`${project.data.title}, image ${index + 1}${image.caption ? `: ${image.caption}` : ''}`} loading="lazy" decoding="async" />
+            <img
+              src={imageUrl(image.src)}
+              width={image.width}
+              height={image.height}
+              alt={`${project.data.title}, image ${index + 1}${image.caption ? `: ${image.caption}` : ''}`}
+              loading="lazy"
+              decoding="async"
+            />
             {image.caption && <figcaption>{image.caption}</figcaption>}
           </figure>
         ))}

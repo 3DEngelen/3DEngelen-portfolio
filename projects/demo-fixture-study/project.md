@@ -1,13 +1,13 @@
 ---
-title: "Demo / Fixture Study"
-description: "A fictional example showing how a finished workshop project could be presented."
-completed: "2026-01"
-hero: "pictures/01-fixture.svg"
-tags: ["Fixture", "Fabrication"]
-category: "Workshop"
+title: 'Demo / Fixture Study'
+description: 'A fictional example showing how a finished workshop project could be presented.'
+completed: '2026-01'
+hero: 'pictures/01-fixture.svg'
+tags: ['Fixture', 'Fabrication']
+category: 'Workshop'
 gallery:
   01-fixture.svg:
-    caption: "Illustrative diagram — not a photograph or tested design."
+    caption: 'Illustrative diagram — not a photograph or tested design.'
 ---
 
 ## Goal

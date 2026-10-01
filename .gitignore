@@ -5,3 +5,4 @@ public/generated/
 src/generated/
 .env
 .env.*
+apm_modules/

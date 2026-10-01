@@ -8,30 +8,32 @@ Use Node 22 or newer. Run `npm ci`, then `npm run dev` and open the forwarded po
 
 Run `npm run check` to validate project content and Astro types, `npm run format:check` to check formatting, and `npm run build` to generate the site in `dist/`. `npm run preview` serves the production build. Image derivatives are generated in `public/generated/` and are not committed.
 
+Run `npm test` for focused project-image validation tests. The optional APM manifest pins the upstream `context-authoring` skill for work on agent/skill definitions; it is not required for site development or builds. If using APM, run `apm install --frozen --target copilot` to install from `apm.lock.yaml` after reviewing the upstream package. The source is [JanDeDobbeleer/agentic](https://github.com/JanDeDobbeleer/agentic/tree/main/skills/context-authoring) (MIT); the other considered upstream skills were not installed because their cross-project editing or Markdown rules do not fit this site.
+
 ## Add a project
 
 Create `projects/<project-slug>/project.md` and `projects/<project-slug>/pictures/`. Use lowercase letters, digits, and hyphens for the folder name; it becomes the URL. Do not put a slug in frontmatter. Add publication-ready JPG, PNG, WebP, AVIF, or SVG images to `pictures/`, named `01-...`, `02-...` etc. for a predictable alphabetical gallery. The hero must reference one of these images.
 
 ```md
 ---
-title: "Project title"
-description: "One sentence suitable for a card and search preview."
-completed: "2026-01"
-hero: "pictures/01-hero.jpg"
-tags: ["Fabrication", "Design"]
-category: "Optional category"
+title: 'Project title'
+description: 'One sentence suitable for a card and search preview.'
+completed: '2026-01'
+hero: 'pictures/01-hero.jpg'
+tags: ['Fabrication', 'Design']
+category: 'Optional category'
 resources:
-  - type: "model"
-    label: "Model files"
-    url: "https://example.com/model"
+  - type: 'model'
+    label: 'Model files'
+    url: 'https://example.com/model'
 gallery:
   01-hero.jpg:
-    caption: "Optional image caption"
+    caption: 'Optional image caption'
     order: 1
 seo:
-  title: "Optional browser title"
-  description: "Optional social description"
-  image: "pictures/02-preview.jpg"
+  title: 'Optional browser title'
+  description: 'Optional social description'
+  image: 'pictures/02-preview.jpg'
 ---
 
 ## Goal

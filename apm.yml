@@ -1,0 +1,7 @@
+name: 3dengelen-portfolio
+version: 1.0.0
+targets:
+  - copilot
+dependencies:
+  apm:
+    - JanDeDobbeleer/agentic/skills/context-authoring#92c98248ee5b0763daa4ce54f85488289fbb0940

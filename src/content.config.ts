@@ -2,7 +2,9 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'zod';
 
-const picture = z.string().regex(/^pictures\/[^/]+\.(?:jpe?g|png|webp|avif|svg)$/i);
+const picture = z
+  .string()
+  .regex(/^pictures\/[^/]+\.(?:jpe?g|png|webp|avif|svg)$/i);
 
 const projects = defineCollection({
   loader: glob({
