@@ -1,0 +1,35 @@
+---
+import type { Project } from '../lib/projects';
+import { imageUrl, projectImages, projectUrl } from '../lib/projects';
+
+interface Props {
+  project: Project;
+  featured?: boolean;
+}
+const { project, featured = false } = Astro.props;
+const image = projectImages(project).card;
+---
+
+<article class:list={['project-card', { featured }]} data-tags={project.data.tags.join('|')}>
+  <a href={projectUrl(project)} aria-label={`View ${project.data.title}`}>
+    <div class="card-image">
+      <img
+        src={imageUrl(image.src)}
+        width={image.width}
+        height={image.height}
+        alt={`Illustration of ${project.data.title}`}
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="card-arrow" aria-hidden="true">↗</span>
+    </div>
+    <div class="card-heading">
+      <h3>{project.data.title}</h3>
+      <span class="year">{project.data.completed.slice(0, 4)}</span>
+    </div>
+    <p>{project.data.description}</p>
+    <div class="tags" aria-label="Project tags">
+      {project.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+  </a>
+</article>

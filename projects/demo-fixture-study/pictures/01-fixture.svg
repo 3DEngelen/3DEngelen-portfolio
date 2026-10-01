@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#172629"/>
+  <g fill="none" stroke="#64817b" stroke-width="2">
+    <path d="M0 200h1200M0 400h1200M0 600h1200M200 0v800M400 0v800M600 0v800M800 0v800M1000 0v800" opacity=".25"/>
+    <path d="M218 218h764v364H218z" stroke-width="5"/>
+    <circle cx="298" cy="298" r="25"/><circle cx="902" cy="298" r="25"/>
+    <circle cx="298" cy="502" r="25"/><circle cx="902" cy="502" r="25"/>
+  </g>
+  <path d="M350 335h500v130H350z" fill="#d8ac70"/>
+  <path d="M350 335h500v130H350z" fill="none" stroke="#f4d9a8" stroke-width="5"/>
+  <path d="M470 336v128m260-128v128" stroke="#172629" stroke-width="4"/>
+  <g fill="#f5eddc" font-family="sans-serif">
+    <text x="220" y="175" font-size="28" letter-spacing="5">DEMO / FIXTURE STUDY</text>
+    <text x="220" y="650" font-size="20" letter-spacing="3">ILLUSTRATION · NOT A TEST RESULT</text>
+  </g>
+</svg>

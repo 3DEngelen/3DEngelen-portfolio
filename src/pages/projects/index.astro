@@ -1,0 +1,16 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import { allProjects } from '../../lib/projects';
+
+const projects = await allProjects();
+---
+
+<Layout title="Projects" description="Browse finished 3DEngelen maker projects by tag.">
+  <div class="page-intro section-shell">
+    <p class="eyebrow">THE WORK / FINISHED PROJECTS</p>
+    <h1>Projects<span class="accent">.</span></h1>
+    <p>Completed builds, collected in one place.</p>
+  </div>
+  <ProjectGrid projects={projects} />
+</Layout>
