@@ -79,7 +79,7 @@ const tags = [
               .forEach((card) => {
                 card.hidden =
                   tag !== 'all' &&
-                  !card.dataset.tags?.split('|').includes(tag ?? '');
+                  !JSON.parse(card.dataset.tags ?? '[]').includes(tag);
                 if (!card.hidden) visible++;
               });
             const empty = grid.querySelector<HTMLElement>('.empty-message');

@@ -12,7 +12,7 @@ const image = projectImages(project).card;
 
 <article
   class:list={['project-card', { featured }]}
-  data-tags={project.data.tags.join('|')}
+  data-tags={JSON.stringify(project.data.tags)}
 >
   <a href={projectUrl(project)} aria-label={`View ${project.data.title}`}>
     <div class="card-image">
