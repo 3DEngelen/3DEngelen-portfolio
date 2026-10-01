@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+public/generated/
+src/generated/
+.env
+.env.*
+apm_modules/

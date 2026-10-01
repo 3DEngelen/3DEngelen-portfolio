@@ -1,0 +1,75 @@
+---
+import type { Project } from '../lib/projects';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+---
+
+<section
+  class="carousel-section section-shell"
+  aria-labelledby="featured-title"
+  data-carousel
+>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">
+        SELECTED WORK / {String(projects.length).padStart(2, '0')}
+      </p>
+      <h2 id="featured-title">
+        On the bench<span class="accent">.</span>
+      </h2>
+    </div>
+    <div class="carousel-controls">
+      <button
+        type="button"
+        data-direction="-1"
+        aria-label="Scroll projects left"
+      >
+        ←
+      </button>
+      <button
+        type="button"
+        data-direction="1"
+        aria-label="Scroll projects right"
+      >
+        →
+      </button>
+    </div>
+  </div>
+  <div
+    class="carousel-track"
+    tabindex="0"
+    role="region"
+    aria-label="Browse all projects"
+  >
+    {projects.map((project) => (
+      <ProjectCard project={project} featured />
+    ))}
+  </div>
+</section>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-carousel]')
+    .forEach((carousel) => {
+      const track = carousel.querySelector<HTMLElement>('.carousel-track');
+      carousel
+        .querySelectorAll<HTMLButtonElement>('[data-direction]')
+        .forEach((button) => {
+          button.addEventListener('click', () => {
+            const direction = Number(button.dataset.direction);
+            const distance =
+              track
+                ?.querySelector<HTMLElement>('.project-card')
+                ?.getBoundingClientRect().width ?? 400;
+            track?.scrollBy({
+              left: direction * (distance + 20),
+              behavior: 'smooth',
+            });
+          });
+        });
+    });
+</script>

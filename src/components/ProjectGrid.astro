@@ -1,0 +1,90 @@
+---
+import type { Project } from '../lib/projects';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+const tags = [
+  ...new Set(projects.flatMap((project) => project.data.tags)),
+].sort();
+---
+
+<section
+  class="listing section-shell"
+  aria-labelledby="listing-title"
+  data-project-grid
+>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">
+        THE INDEX / {String(projects.length).padStart(2, '0')} PROJECTS
+      </p>
+      <h2 id="listing-title">
+        All projects<span class="accent">.</span>
+      </h2>
+    </div>
+  </div>
+  {tags.length > 0 && (
+    <div class="filters" role="group" aria-label="Filter projects by tag">
+      <button
+        type="button"
+        class="filter active"
+        data-filter="all"
+        aria-pressed="true"
+      >
+        All
+      </button>
+      {tags.map((tag) => (
+        <button
+          type="button"
+          class="filter"
+          data-filter={tag}
+          aria-pressed="false"
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+  )}
+  <div class="project-grid">
+    {projects.map((project) => (
+      <ProjectCard project={project} />
+    ))}
+  </div>
+  <p class="empty-message" hidden>
+    No projects match this tag.
+  </p>
+</section>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-project-grid]')
+    .forEach((grid) => {
+      grid
+        .querySelectorAll<HTMLButtonElement>('[data-filter]')
+        .forEach((button) => {
+          button.addEventListener('click', () => {
+            const tag = button.dataset.filter;
+            grid
+              .querySelectorAll<HTMLButtonElement>('[data-filter]')
+              .forEach((item) => {
+                item.classList.toggle('active', item === button);
+                item.setAttribute('aria-pressed', String(item === button));
+              });
+            let visible = 0;
+            grid
+              .querySelectorAll<HTMLElement>('.project-card')
+              .forEach((card) => {
+                card.hidden =
+                  tag !== 'all' &&
+                  !JSON.parse(card.dataset.tags ?? '[]').includes(tag);
+                if (!card.hidden) visible++;
+              });
+            const empty = grid.querySelector<HTMLElement>('.empty-message');
+            if (empty) empty.hidden = visible > 0;
+          });
+        });
+    });
+</script>

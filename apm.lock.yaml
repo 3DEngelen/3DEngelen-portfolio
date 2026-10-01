@@ -1,0 +1,15 @@
+lockfile_version: '1'
+apm_version: 0.32.0
+dependencies:
+- repo_url: jandedobbeleer/agentic
+  materialization_repo_url: JanDeDobbeleer/agentic
+  name: context-authoring
+  host: github.com
+  resolved_commit: 92c98248ee5b0763daa4ce54f85488289fbb0940
+  resolved_ref: 92c98248ee5b0763daa4ce54f85488289fbb0940
+  version: unknown
+  virtual_path: skills/context-authoring
+  is_virtual: true
+  package_type: claude_skill
+  content_hash: sha256:b087fac1cf1810771060dea5b7a8c574b639790b5f9f30d23c5b6b20bc8ac21a
+deployments: []
