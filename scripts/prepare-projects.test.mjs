@@ -45,6 +45,10 @@ test('generates manifest and optimized image derivatives', async (t) => {
     manifest['sample-project'].hero.alt,
     'A red rectangle on a white background',
   );
+  assert.equal(
+    manifest['sample-project'].card.alt,
+    'A red rectangle on a white background',
+  );
   assert.ok(
     (await readFile(join(root, 'public/generated/sample-project/card-01.webp')))
       .length > 0,
@@ -55,7 +59,7 @@ test('rejects missing hero images with a file-specific error', async (t) => {
   const { root, project } = await fixture(t);
   await writeFile(
     join(project, 'project.md'),
-    '---\nhero: pictures/missing.jpg\n---\nExample\n',
+    '---\nhero: pictures/missing.jpg\ngallery:\n  01-image.svg:\n    alt: A red rectangle\n---\nExample\n',
   );
   assert.throws(
     () => prepare(root),
@@ -72,6 +76,18 @@ test('rejects gallery references to absent pictures', async (t) => {
   assert.throws(
     () => prepare(root),
     /sample-project: gallery references missing image: missing.jpg/,
+  );
+});
+
+test('rejects pictures without descriptive alt text', async (t) => {
+  const { root, project } = await fixture(t);
+  await writeFile(
+    join(project, 'project.md'),
+    '---\nhero: pictures/01-image.svg\n---\nExample\n',
+  );
+  assert.throws(
+    () => prepare(root),
+    /sample-project: missing descriptive alt text for pictures\/01-image\.svg/,
   );
 });
 

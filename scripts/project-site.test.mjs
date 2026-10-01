@@ -48,6 +48,9 @@ const minimalProject = `---
 title: 'Simple hook'
 description: 'A finished hook for a small workshop.'
 hero: 'pictures/01-hook.svg'
+gallery:
+  01-hook.svg:
+    alt: A simple hook fixed beside a workbench
 ---
 `;
 
@@ -131,6 +134,7 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(listing, /Workshop/);
   assert.match(listing, /data-filter="workshop"/);
   assert.match(listing, /data-tags=/);
+  assert.match(listing, /alt="A black workshop organizer holding hex keys"/);
   assert.match(home, /Workshop organizer/);
   assert.match(home, /href="#listing-title"/);
   const featuredSection = home
@@ -139,7 +143,7 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(featuredSection, /Workshop organizer/);
   assert.doesNotMatch(featuredSection, /Simple hook/);
   assert.match(minimal, /Simple hook/);
-  assert.match(minimal, /Simple hook, image 1/);
+  assert.match(minimal, /alt="A simple hook fixed beside a workbench"/);
   assert.doesNotMatch(minimal, /A CLOSER LOOK/);
   assert.doesNotMatch(minimal, /Completed/);
   await assert.rejects(
@@ -166,5 +170,23 @@ test('builds a minimal project page and concise listing card', async (t) => {
       error.stderr
         .toString()
         .includes('Description must be between one and ten sentences.'),
+  );
+
+  await rm(join(site, 'projects'), { recursive: true, force: true });
+  await mkdir(join(site, 'projects'));
+  execFileSync('npm', ['run', 'build'], {
+    cwd: site,
+    env: { ...process.env, SITE_URL: 'https://example.com', BASE_PATH: '/' },
+    stdio: 'pipe',
+  });
+  const emptyHome = await readFile(join(site, 'dist/index.html'), 'utf8');
+  const emptyListing = await readFile(
+    join(site, 'dist/projects/index.html'),
+    'utf8',
+  );
+  assert.match(emptyListing, /No completed projects have been published yet/);
+  assert.doesNotMatch(emptyHome, /aria-label="Scroll projects (left|right)"/);
+  await assert.rejects(
+    readFile(join(site, 'dist/projects/workshop-organizer/index.html')),
   );
 });

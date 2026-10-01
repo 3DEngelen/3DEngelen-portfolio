@@ -55,7 +55,7 @@ const projects = defineCollection({
       .record(
         z.string(),
         z.object({
-          alt: z.string().trim().min(1).optional(),
+          alt: z.string().trim().min(1),
           caption: z.string().trim().min(1).optional(),
           order: z.number().int().optional(),
         }),
