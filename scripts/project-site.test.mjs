@@ -100,6 +100,7 @@ test('builds a minimal project page and concise listing card', async (t) => {
     'utf8',
   );
   const home = await readFile(join(site, 'dist/index.html'), 'utf8');
+  const about = await readFile(join(site, 'dist/about/index.html'), 'utf8');
   const minimal = await readFile(
     join(site, 'dist/projects/simple-hook/index.html'),
     'utf8',
@@ -137,6 +138,12 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(listing, /alt="A black workshop organizer holding hex keys"/);
   assert.match(home, /Workshop organizer/);
   assert.match(home, /href="#listing-title"/);
+  assert.match(about, /Creality K1C/);
+  assert.match(about, /Creality K2 Pro with CFS/);
+  assert.match(about, /Bambu Lab A1 mini/);
+  assert.match(about, /Polymaker, Bambu Lab, Creality, Landu, and Flashforge/);
+  assert.match(about, /href="mailto:3DEngelen@gmail\.com"/);
+  assert.doesNotMatch(about, /PLACEHOLDER/);
   const featuredSection = home
     .split('<section class="carousel-section')[1]
     ?.split('</section>')[0];
