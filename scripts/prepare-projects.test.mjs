@@ -20,7 +20,7 @@ async function fixture(t, slug = 'sample-project') {
   await writeFile(join(project, 'pictures', '01-image.svg'), svg);
   await writeFile(
     join(project, 'project.md'),
-    '---\nhero: pictures/01-image.svg\n---\nExample\n',
+    '---\nhero: pictures/01-image.svg\ngallery:\n  01-image.svg:\n    alt: A red rectangle on a white background\n---\nExample\n',
   );
   return { root, project };
 }
@@ -41,6 +41,10 @@ test('generates manifest and optimized image derivatives', async (t) => {
   );
   assert.equal(manifest['sample-project'].gallery.length, 1);
   assert.equal(manifest['sample-project'].hero.width, 100);
+  assert.equal(
+    manifest['sample-project'].hero.alt,
+    'A red rectangle on a white background',
+  );
   assert.ok(
     (await readFile(join(root, 'public/generated/sample-project/card-01.webp')))
       .length > 0,

@@ -53,8 +53,10 @@ const tags = [
       <ProjectCard project={project} />
     ))}
   </div>
-  <p class="empty-message" hidden>
-    No projects match this tag.
+  <p class="empty-message" hidden={projects.length > 0}>
+    {projects.length > 0
+      ? 'No projects match this tag.'
+      : 'No completed projects have been published yet.'}
   </p>
 </section>
 

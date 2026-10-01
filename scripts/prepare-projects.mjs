@@ -86,6 +86,9 @@ for (const folder of folders) {
           src: `generated/${slug}/${galleryFile}`,
           width: gallery.width,
           height: gallery.height,
+          alt:
+            data.gallery?.[name]?.alt ||
+            `${data.title ?? slug}, image ${index + 1}`,
           ...(data.gallery?.[name]?.caption
             ? { caption: data.gallery[name].caption }
             : {}),

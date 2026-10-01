@@ -1,10 +1,15 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { imageUrl, projectImages } from '../../lib/projects';
+import {
+  allProjects,
+  imageUrl,
+  projectExcerpt,
+  projectImages,
+} from '../../lib/projects';
 
 export async function getStaticPaths() {
-  return (await getCollection('projects')).map((project) => ({
+  return (await allProjects()).map((project) => ({
     params: { slug: project.id },
     props: { project },
   }));
@@ -13,6 +18,7 @@ export async function getStaticPaths() {
 const { project } = Astro.props as { project: CollectionEntry<'projects'> };
 const { Content } = await render(project);
 const images = projectImages(project);
+const excerpt = projectExcerpt(project);
 const social = project.data.seo?.image
   ? images.previews[project.data.seo.image.slice('pictures/'.length)]
   : images.hero;
@@ -20,7 +26,7 @@ const social = project.data.seo?.image
 
 <Layout
   title={project.data.seo?.title ?? project.data.title}
-  description={project.data.seo?.description ?? project.data.description}
+  description={project.data.seo?.description ?? excerpt}
   image={social.src}
   type="article"
 >
@@ -30,8 +36,8 @@ const social = project.data.seo?.image
     </a>
     <header class="project-header">
       <p class="eyebrow">
-        {project.data.category ?? 'PROJECT'} /{' '}
-        {project.data.completed.slice(0, 4)}
+        PROJECT
+        {project.data.completed && ` / ${project.data.completed.slice(0, 4)}`}
       </p>
       <h1>
         {project.data.title}
@@ -49,7 +55,7 @@ const social = project.data.seo?.image
         src={imageUrl(images.hero.src)}
         width={images.hero.width}
         height={images.hero.height}
-        alt={images.hero.caption ?? project.data.title}
+        alt={images.hero.alt}
         fetchpriority="high"
       />
       {images.hero.caption && <figcaption>{images.hero.caption}</figcaption>}
@@ -57,9 +63,35 @@ const social = project.data.seo?.image
     <div class="project-body">
       <div class="project-meta">
         <p class="eyebrow">PROJECT NOTES</p>
-        <p>
-          Completed <strong>{project.data.completed.slice(0, 4)}</strong>
-        </p>
+        {project.data.completed && (
+          <p>
+            Completed <strong>{project.data.completed.slice(0, 4)}</strong>
+          </p>
+        )}
+        {project.data.printers.length > 0 && (
+          <div class="project-details">
+            <p class="eyebrow">PRINTERS</p>
+            <ul>
+              {project.data.printers.map((printer) => (
+                <li>{printer}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {project.data.materials.length > 0 && (
+          <div class="project-details">
+            <p class="eyebrow">MATERIALS</p>
+            <ul>
+              {project.data.materials.map((material) => (
+                <li>
+                  {material.brand && `${material.brand} `}
+                  {material.name}
+                  {material.grade && ` / ${material.grade}`}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {project.data.resources.length > 0 && (
           <div class="resources">
             <p class="eyebrow">RESOURCES</p>
@@ -84,30 +116,32 @@ const social = project.data.seo?.image
         <Content />
       </div>
     </div>
-    <section class="gallery" aria-labelledby="gallery-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">A CLOSER LOOK</p>
-          <h2 id="gallery-title">
-            Gallery<span class="accent">.</span>
-          </h2>
+    {images.gallery.length > 1 && (
+      <section class="gallery" aria-labelledby="gallery-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A CLOSER LOOK</p>
+            <h2 id="gallery-title">
+              Gallery<span class="accent">.</span>
+            </h2>
+          </div>
         </div>
-      </div>
-      <div class="gallery-grid">
-        {images.gallery.map((image, index) => (
-          <figure>
-            <img
-              src={imageUrl(image.src)}
-              width={image.width}
-              height={image.height}
-              alt={`${project.data.title}, image ${index + 1}${image.caption ? `: ${image.caption}` : ''}`}
-              loading="lazy"
-              decoding="async"
-            />
-            {image.caption && <figcaption>{image.caption}</figcaption>}
-          </figure>
-        ))}
-      </div>
-    </section>
+        <div class="gallery-grid">
+          {images.gallery.map((image) => (
+            <figure>
+              <img
+                src={imageUrl(image.src)}
+                width={image.width}
+                height={image.height}
+                alt={image.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              {image.caption && <figcaption>{image.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 </Layout>

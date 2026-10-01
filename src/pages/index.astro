@@ -2,9 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectCarousel from '../components/ProjectCarousel.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
-import { allProjects } from '../lib/projects';
+import { allProjects, featuredProjects } from '../lib/projects';
 
 const projects = await allProjects();
+const featured = featuredProjects(projects);
 ---
 
 <Layout
@@ -25,7 +26,7 @@ const projects = await allProjects();
         A collection of finished projects: the ideas, the outcomes, and the
         useful details in between.
       </p>
-      <a class="text-link" href="#featured-title">
+      <a class="text-link" href="#listing-title">
         Explore the work <span aria-hidden="true">↘</span>
       </a>
     </div>
@@ -33,6 +34,6 @@ const projects = await allProjects();
       01 / WORK
     </span>
   </section>
-  <ProjectCarousel projects={projects} />
+  <ProjectCarousel projects={featured} />
   <ProjectGrid projects={projects} />
 </Layout>
