@@ -10,6 +10,16 @@ Run `npm run check` to validate project content and Astro types, `npm run format
 
 Run `npm test` for focused project-image validation tests. The optional APM manifest pins the upstream `context-authoring` skill for work on agent/skill definitions; it is not required for site development or builds. If using APM, run `apm install --frozen --target copilot` to install from `apm.lock.yaml` after reviewing the upstream package. The source is [JanDeDobbeleer/agentic](https://github.com/JanDeDobbeleer/agentic/tree/main/skills/context-authoring) (MIT); the other considered upstream skills were not installed because their cross-project editing or Markdown rules do not fit this site.
 
+### GitHub CLI in Codespaces
+
+The devcontainer installs GitHub CLI (`gh`). Codespaces supplies GitHub authentication for the repository; opening the same Codespace from another computer does not require copying a token or relying on that computer's browser cookies. Git commits are local; pushes and PR creation require GitHub access.
+
+Use **Terminal → Run Task → GitHub: verify Codespaces authentication** to check the authenticated account and repository access. The tasks in [`.vscode/tasks.json`](.vscode/tasks.json) also support pushing the current branch, creating a PR using commit messages, and viewing the current PR. Commit and push the intended changes before running the PR task.
+
+An agent's separate command runner may lack the token even when the integrated terminal is authenticated. In that case, the agent should execute `gh` and pushes using VS Code tasks, which use the working terminal environment. See [the agent CLI workflow](docs/agents/issue-tracker.md#codespaces-cli-authentication).
+
+After merging changes to the devcontainer configuration, rebuild an existing Codespace with **Codespaces: Rebuild Container** to install the configured CLI feature. New Codespaces pick it up automatically. Keep tokens in the Codespaces environment rather than files or Git; if the authentication task fails, check the Codespace's repository permissions before attempting GitHub operations.
+
 ## Add a project
 
 Create `projects/<project-slug>/project.md` and `projects/<project-slug>/pictures/`. Use lowercase letters, digits, and hyphens for the folder name; it becomes the stable URL. Do not put a slug in frontmatter or edit a central project list. Publish completed builds, experiments, or prototypes only. Add selected, reasonably compressed JPG, PNG, WebP, AVIF, or SVG exports to `pictures/`, named `01-...`, `02-...` etc. for a predictable gallery. Keep raw originals and working files outside the repository. The hero must reference one of these images.

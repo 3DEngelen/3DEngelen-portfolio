@@ -1,8 +1,8 @@
 ## Agent skills
 
-### Issue tracker
+### GitHub operations
 
-Issues are tracked in GitHub Issues. See `docs/agents/issue-tracker.md`.
+For Git commits, pushes, issues, and pull requests, see `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 

@@ -2,6 +2,16 @@
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
+## Codespaces CLI authentication
+
+Git commits are local and do not require GitHub authentication. Pushes and `gh` operations use the Codespace's GitHub credentials.
+
+Before authenticated operations, run `gh auth status` in the command runner. If it lacks authentication while the Codespace terminal is authenticated, run the **GitHub: verify Codespaces authentication** task in [`.vscode/tasks.json`](../../.vscode/tasks.json) with VS Code's task tools and read its output. VS Code tasks can inherit the Codespace token even when an agent's separate command runner does not.
+
+When the task succeeds, execute authenticated commands through VS Code tasks. The existing tasks cover pushing the current branch, creating a PR from commit messages, and viewing the current PR. Push only the intended committed branch before creating a PR. For custom `gh` commands or a tailored PR body, configure a task for that invocation and run it with the same task tools. Verify the resulting PR URL, head, and base with `gh pr view`.
+
+If the task also fails, stop authenticated operations and report its error. Keep credentials in the Codespaces environment; never print, copy, or commit tokens. Use the CLI task path rather than browser automation or asking the user to authenticate repeatedly in a different execution context.
+
 ## Conventions
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
