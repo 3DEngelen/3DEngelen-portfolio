@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "GitHub: verify Codespaces authentication",
+      "type": "shell",
+      "command": "gh auth status && gh api user --jq .login && gh repo view --json nameWithOwner,viewerPermission",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "GitHub: push current branch",
+      "type": "process",
+      "command": "git",
+      "args": ["push", "--set-upstream", "origin", "HEAD"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "GitHub: verify Codespaces authentication",
+      "problemMatcher": []
+    },
+    {
+      "label": "GitHub: create pull request",
+      "type": "process",
+      "command": "gh",
+      "args": ["pr", "create", "--fill"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "GitHub: verify Codespaces authentication",
+      "problemMatcher": []
+    },
+    {
+      "label": "GitHub: view current pull request",
+      "type": "process",
+      "command": "gh",
+      "args": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,baseRefName,headRefName"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "GitHub: verify Codespaces authentication",
+      "problemMatcher": []
+    }
+  ]
+}

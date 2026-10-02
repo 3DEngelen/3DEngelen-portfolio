@@ -1,6 +1,9 @@
 {
   "name": "3DEngelen Astro",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "postCreateCommand": "npm ci",
   "forwardPorts": [4321],
   "portsAttributes": {
