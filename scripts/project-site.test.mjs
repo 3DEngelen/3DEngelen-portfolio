@@ -112,9 +112,24 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(detail, /Example Printer XL/);
   assert.match(detail, /Example Filament/);
   assert.match(detail, /Source files/);
+  assert.match(detail, /data-project-gallery/);
+  assert.equal(detail.match(/<figure[^>]*data-gallery-slide/g)?.length, 2);
+  assert.equal(detail.match(/<button[^>]*data-gallery-thumbnail=/g)?.length, 2);
+  assert.match(detail, /class="gallery-viewer"/);
+  assert.match(detail, /aria-label="Enlarged project photo"/);
+  assert.match(detail, /class="prose"/);
+  assert.doesNotMatch(detail, /class="project-hero"/);
+  assert.ok(
+    detail.indexOf('class="project-header"') <
+      detail.indexOf('class="gallery"'),
+  );
+  assert.ok(
+    detail.indexOf('class="gallery"') < detail.indexOf('class="project-body'),
+  );
+  assert.doesNotMatch(detail, /GalleryPrototype|prototype-switcher/);
   assert.equal(
     detail.match(/alt="A black workshop organizer holding hex keys"/g)?.length,
-    2,
+    1,
   );
   assert.match(detail, /alt="The organizer mounted beside hand tools"/);
   assert.match(
@@ -174,8 +189,12 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(featuredSection, /Workshop organizer/);
   assert.doesNotMatch(featuredSection, /Simple hook/);
   assert.match(minimal, /Simple hook/);
+  assert.match(minimal, /project-body--metadata-only/);
+  assert.doesNotMatch(minimal, /class="prose"/);
+  assert.match(minimal, /data-project-gallery/);
+  assert.equal(minimal.match(/<figure[^>]*data-gallery-slide/g)?.length, 1);
   assert.match(minimal, /alt="A simple hook fixed beside a workbench"/);
-  assert.doesNotMatch(minimal, /A CLOSER LOOK/);
+  assert.match(minimal, /A CLOSER LOOK/);
   assert.doesNotMatch(minimal, /Completed/);
   await assert.rejects(
     readFile(join(site, 'dist/projects/demo-fixture-study/index.html')),
