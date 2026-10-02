@@ -167,7 +167,7 @@ const { images } = Astro.props;
           button.setAttribute('aria-pressed', String(position === index)),
         );
         const thumbnail = buttons[index];
-        const left = thumbnail.offsetLeft - thumbnails.offsetLeft;
+        const left = thumbnail.offsetLeft;
         if (
           left < thumbnails.scrollLeft ||
           left + thumbnail.offsetWidth >
@@ -183,7 +183,7 @@ const { images } = Astro.props;
       function goTo(value: number) {
         setActive(value);
         track.scrollTo({
-          left: slides[index].offsetLeft - track.offsetLeft,
+          left: slides[index].offsetLeft,
           behavior: behavior(),
         });
       }
@@ -373,6 +373,12 @@ const { images } = Astro.props;
   }
   :global(html.gallery-viewer-open) {
     overflow: hidden;
+  }
+  @media (min-width: 1000px) {
+    .gallery-track img {
+      height: min(60vh, 520px);
+      background: var(--bg);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .gallery-track {
