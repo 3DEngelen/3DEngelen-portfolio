@@ -52,6 +52,17 @@ Optional Markdown notes can follow the description. No headings or completion da
 
 Only title, a one-to-ten-sentence description, a hero image, and descriptive `alt` text for every project picture are required. Add one `gallery` entry per picture; its visible caption and order are optional. Completion month (`YYYY-MM`), featured status, printer models, materials, flat tags, resource links, and additional Markdown notes are optional. Tags are trimmed, deduplicated, and lowercased for browsing. Material entries can include a brand and grade. Resource `type` is a free-form label and each resource needs a label and URL. Gallery order defaults to filename order. Social/search metadata uses the title, first description sentence, canonical URL, and hero image by default; optional SEO overrides are supported. `npm run check` rejects invalid metadata, descriptions outside the sentence limit, missing alt text or image references, and unsupported image files.
 
+Project photos retain their proportions without cropping or stretching.
+Project pages show the introduction, then the gallery, then project notes.
+The hero photo stays in the gallery and is used for listing cards and social
+previews, rather than being repeated as a standalone photo.
+The gallery combines a swipeable full-photo view, previous/next controls, and
+a thumbnail strip. Tap a photo to enlarge it; the viewer also supports arrow
+keys, Escape, and a close button. Without JavaScript, photos remain browsable
+and link directly to their image files. Printer, material, and model details
+use compact spacing; projects without written notes omit the empty notes column.
+Listing cards retain their cropped previews.
+
 ## Brand assets
 
 The shared header uses the printer symbol and complete 3DEngelen wordmark.

@@ -1,0 +1,382 @@
+---
+import { imageUrl, type GalleryImage } from '../lib/projects';
+
+interface Props {
+  images: GalleryImage[];
+}
+const { images } = Astro.props;
+---
+
+<div class="project-gallery" data-project-gallery>
+  <div class="gallery-toolbar" hidden>
+    <p class="gallery-status" aria-live="polite" aria-atomic="true">
+      Photo 1 of {images.length}
+    </p>
+    <div class="gallery-buttons">
+      <button type="button" data-gallery-previous aria-label="Previous photo">
+        ←
+      </button>
+      <button type="button" data-gallery-next aria-label="Next photo">
+        →
+      </button>
+    </div>
+  </div>
+  <div
+    class="gallery-track"
+    tabindex="0"
+    role="region"
+    aria-label="Project photos"
+  >
+    {images.map((image, index) => (
+      <figure data-gallery-slide>
+        <a
+          href={imageUrl(image.src)}
+          aria-label={`Enlarge photo: ${image.alt}`}
+        >
+          <img
+            src={imageUrl(image.src)}
+            width={image.width}
+            height={image.height}
+            alt={image.alt}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            fetchpriority={index === 0 ? 'high' : 'auto'}
+            decoding="async"
+          />
+        </a>
+        {image.caption && <figcaption>{image.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+  <p class="gallery-hint">
+    Swipe or use the arrows to browse. Tap a photo to enlarge.
+  </p>
+  <div class="gallery-thumbnails" aria-label="Choose a photo" hidden>
+    {images.map((image, index) => (
+      <button
+        type="button"
+        data-gallery-thumbnail={index}
+        aria-label={`Show photo ${index + 1}: ${image.alt}`}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+      >
+        <img
+          src={imageUrl(image.src)}
+          width={image.width}
+          height={image.height}
+          alt=""
+          loading="lazy"
+        />
+      </button>
+    ))}
+  </div>
+  <dialog class="gallery-viewer" aria-label="Enlarged project photo">
+    <div class="viewer-toolbar">
+      <p class="viewer-status" aria-live="polite" aria-atomic="true"></p>
+      <button type="button" data-viewer-close autofocus>
+        Close photo ✕
+      </button>
+    </div>
+    <figure>
+      <img class="viewer-photo" alt="" />
+      <figcaption class="viewer-caption"></figcaption>
+    </figure>
+    <div class="gallery-buttons">
+      <button
+        type="button"
+        data-viewer-previous
+        aria-label="Previous enlarged photo"
+      >
+        ←
+      </button>
+      <button type="button" data-viewer-next aria-label="Next enlarged photo">
+        →
+      </button>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-project-gallery]')
+    .forEach((gallery) => {
+      function required<T extends Element>(
+        selector: string,
+        type: { new (...args: never[]): T },
+      ): T {
+        const element = gallery.querySelector(selector);
+        if (!(element instanceof type))
+          throw new Error(`Project gallery is missing ${selector}`);
+        return element;
+      }
+      const track = required('.gallery-track', HTMLElement);
+      const status = required('.gallery-status', HTMLElement);
+      const previous = required('[data-gallery-previous]', HTMLButtonElement);
+      const next = required('[data-gallery-next]', HTMLButtonElement);
+      const thumbnails = required('.gallery-thumbnails', HTMLElement);
+      const dialog = required('.gallery-viewer', HTMLDialogElement);
+      const viewerPhoto = required('.viewer-photo', HTMLImageElement);
+      const viewerCaption = required('.viewer-caption', HTMLElement);
+      const viewerStatus = required('.viewer-status', HTMLElement);
+      const viewerPrevious = required(
+        '[data-viewer-previous]',
+        HTMLButtonElement,
+      );
+      const viewerNext = required('[data-viewer-next]', HTMLButtonElement);
+      const slides = Array.from(
+        gallery.querySelectorAll<HTMLElement>('[data-gallery-slide]'),
+      );
+      const buttons = Array.from(
+        gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumbnail]'),
+      );
+      const photos = slides.map((slide) => {
+        const image = slide.querySelector('img');
+        const link = slide.querySelector('a');
+        if (!image || !link)
+          throw new Error('Project gallery slide is missing its photo link');
+        return {
+          image,
+          link,
+          caption: slide.querySelector('figcaption')?.textContent ?? '',
+        };
+      });
+      if (!slides.length || buttons.length !== slides.length)
+        throw new Error(
+          'Project gallery has inconsistent photos and thumbnails',
+        );
+      let index = 0;
+      const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      );
+      const behavior = () =>
+        reducedMotion.matches ? ('instant' as const) : ('smooth' as const);
+      function renderViewer() {
+        const photo = photos[index];
+        viewerPhoto.src = photo.image.src;
+        viewerPhoto.alt = photo.image.alt;
+        viewerCaption.textContent = photo.caption;
+        viewerCaption.hidden = !photo.caption;
+        viewerStatus.textContent = `Photo ${index + 1} of ${slides.length}`;
+        viewerPrevious.disabled = index === 0;
+        viewerNext.disabled = index === slides.length - 1;
+      }
+      function setActive(value: number) {
+        index = Math.max(0, Math.min(slides.length - 1, value));
+        status.textContent = `Photo ${index + 1} of ${slides.length}`;
+        previous.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        buttons.forEach((button, position) =>
+          button.setAttribute('aria-pressed', String(position === index)),
+        );
+        const thumbnail = buttons[index];
+        const left = thumbnail.offsetLeft - thumbnails.offsetLeft;
+        if (
+          left < thumbnails.scrollLeft ||
+          left + thumbnail.offsetWidth >
+            thumbnails.scrollLeft + thumbnails.clientWidth
+        ) {
+          thumbnails.scrollTo({
+            left: left - (thumbnails.clientWidth - thumbnail.offsetWidth) / 2,
+            behavior: behavior(),
+          });
+        }
+        if (dialog.open) renderViewer();
+      }
+      function goTo(value: number) {
+        setActive(value);
+        track.scrollTo({
+          left: slides[index].offsetLeft - track.offsetLeft,
+          behavior: behavior(),
+        });
+      }
+      previous.addEventListener('click', () => goTo(index - 1));
+      next.addEventListener('click', () => goTo(index + 1));
+      buttons.forEach((button, position) =>
+        button.addEventListener('click', () => goTo(position)),
+      );
+      let frame = 0;
+      track.addEventListener('scroll', () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const x = track.getBoundingClientRect().left;
+          const nearest = slides.reduce(
+            (best, slide, position) =>
+              Math.abs(slide.getBoundingClientRect().left - x) <
+              Math.abs(slides[best].getBoundingClientRect().left - x)
+                ? position
+                : best,
+            0,
+          );
+          if (nearest !== index) setActive(nearest);
+        });
+      });
+      track.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          event.preventDefault();
+          goTo(index + (event.key === 'ArrowLeft' ? -1 : 1));
+        }
+      });
+      let opener: HTMLElement | null = null;
+      photos.forEach((photo, position) =>
+        photo.link.addEventListener('click', (event) => {
+          event.preventDefault();
+          opener = photo.link;
+          goTo(position);
+          renderViewer();
+          dialog.showModal();
+          document.documentElement.classList.add('gallery-viewer-open');
+        }),
+      );
+      required('[data-viewer-close]', HTMLButtonElement).addEventListener(
+        'click',
+        () => dialog.close(),
+      );
+      viewerPrevious.addEventListener('click', () => goTo(index - 1));
+      viewerNext.addEventListener('click', () => goTo(index + 1));
+      dialog.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          dialog.close();
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          event.preventDefault();
+          goTo(index + (event.key === 'ArrowLeft' ? -1 : 1));
+        }
+      });
+      dialog.addEventListener('click', (event) => {
+        const box = dialog.getBoundingClientRect();
+        if (
+          event.target === dialog &&
+          (event.clientX < box.left ||
+            event.clientX > box.right ||
+            event.clientY < box.top ||
+            event.clientY > box.bottom)
+        )
+          dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        document.documentElement.classList.remove('gallery-viewer-open');
+        opener?.focus({ preventScroll: true });
+      });
+      gallery.classList.add('is-enhanced');
+      required('.gallery-toolbar', HTMLElement).hidden = false;
+      thumbnails.hidden = false;
+      setActive(0);
+    });
+</script>
+
+<style>
+  .gallery-track {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    scroll-snap-type: x mandatory;
+    position: relative;
+  }
+  .gallery-track figure {
+    flex: 0 0 100%;
+    min-width: 0;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+  .gallery-track a {
+    display: block;
+  }
+  .gallery-track img {
+    width: 100%;
+    height: min(48vh, 520px);
+    object-fit: contain;
+    background: var(--image-bg);
+  }
+  .gallery-track figcaption {
+    background: var(--bg);
+    padding-block: 12px;
+    min-height: 3.5em;
+  }
+  .gallery-toolbar,
+  .viewer-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .gallery-status,
+  .viewer-status {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .gallery-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  button {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .gallery-hint {
+    display: none;
+    margin: 12px 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .is-enhanced .gallery-hint {
+    display: block;
+  }
+  .gallery-thumbnails {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px;
+    position: relative;
+  }
+  .gallery-thumbnails button {
+    flex: 0 0 64px;
+    padding: 3px;
+  }
+  .gallery-thumbnails button[aria-pressed='true'] {
+    border: 2px solid var(--accent);
+    padding: 2px;
+  }
+  .gallery-thumbnails img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+  }
+  .gallery-viewer {
+    width: min(100% - 24px, 1100px);
+    max-height: 94dvh;
+    padding: 16px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .gallery-viewer::backdrop {
+    background: rgb(0 0 0 / 85%);
+  }
+  .gallery-viewer figure {
+    margin: 0;
+  }
+  .viewer-photo {
+    width: 100%;
+    height: 65dvh;
+    object-fit: contain;
+  }
+  .gallery-viewer .gallery-buttons {
+    justify-content: center;
+  }
+  :global(html.gallery-viewer-open) {
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-track {
+      scroll-behavior: auto;
+    }
+  }
+</style>

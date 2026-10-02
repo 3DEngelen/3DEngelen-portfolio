@@ -1,12 +1,8 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import {
-  allProjects,
-  imageUrl,
-  projectExcerpt,
-  projectImages,
-} from '../../lib/projects';
+import ProjectGallery from '../../components/ProjectGallery.astro';
+import { allProjects, projectExcerpt, projectImages } from '../../lib/projects';
 
 export async function getStaticPaths() {
   return (await allProjects()).map((project) => ({
@@ -17,6 +13,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props as { project: CollectionEntry<'projects'> };
 const { Content } = await render(project);
+const hasNotes = Boolean(project.body?.trim());
 const images = projectImages(project);
 const excerpt = projectExcerpt(project);
 const social = project.data.seo?.image
@@ -50,17 +47,23 @@ const social = project.data.seo?.image
         ))}
       </div>
     </header>
-    <figure class="project-hero">
-      <img
-        src={imageUrl(images.hero.src)}
-        width={images.hero.width}
-        height={images.hero.height}
-        alt={images.hero.alt}
-        fetchpriority="high"
-      />
-      {images.hero.caption && <figcaption>{images.hero.caption}</figcaption>}
-    </figure>
-    <div class="project-body">
+    <section class="gallery" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">A CLOSER LOOK</p>
+          <h2 id="gallery-title">
+            Gallery<span class="accent">.</span>
+          </h2>
+        </div>
+      </div>
+      <ProjectGallery images={images.gallery} />
+    </section>
+    <div
+      class:list={[
+        'project-body',
+        { 'project-body--metadata-only': !hasNotes },
+      ]}
+    >
       <div class="project-meta">
         <p class="eyebrow">PROJECT NOTES</p>
         {project.data.completed && (
@@ -112,36 +115,11 @@ const social = project.data.seo?.image
           </div>
         )}
       </div>
-      <div class="prose">
-        <Content />
-      </div>
+      {hasNotes && (
+        <div class="prose">
+          <Content />
+        </div>
+      )}
     </div>
-    {images.gallery.length > 1 && (
-      <section class="gallery" aria-labelledby="gallery-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">A CLOSER LOOK</p>
-            <h2 id="gallery-title">
-              Gallery<span class="accent">.</span>
-            </h2>
-          </div>
-        </div>
-        <div class="gallery-grid">
-          {images.gallery.map((image) => (
-            <figure>
-              <img
-                src={imageUrl(image.src)}
-                width={image.width}
-                height={image.height}
-                alt={image.alt}
-                loading="lazy"
-                decoding="async"
-              />
-              {image.caption && <figcaption>{image.caption}</figcaption>}
-            </figure>
-          ))}
-        </div>
-      </section>
-    )}
   </article>
 </Layout>
