@@ -191,8 +191,9 @@ h3 {
   font-size: clamp(3rem, 6.2vw, 6rem);
 }
 .outline-text {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--muted);
+  color: var(--bg);
+  -webkit-text-stroke: 2px var(--muted);
+  paint-order: stroke fill;
 }
 .intro-bottom {
   grid-column: 1 / -1;

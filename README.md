@@ -58,7 +58,9 @@ The shared header uses the printer symbol and complete 3DEngelen wordmark.
 The homepage also displays the larger artwork, reduced to 160px on small
 screens. Its heading uses slightly expanded letter spacing at widths up to 600px to
 keep both the solid and outlined text readable. "Shared in" and "detail." always
-appear on separate lines at those widths. Theme-specific transparent assets follow the system color scheme
+appear on separate lines at those widths. The outlined text paints a
+background-colored fill after its stroke to hide overlapping font contours
+on mobile without changing the typeface. Theme-specific transparent assets follow the system color scheme
 unless the existing theme toggle has selected a light or dark override.
 
 Original logo uploads are preserved in [`docs/logo/`](docs/logo/). Run
