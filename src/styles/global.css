@@ -557,6 +557,9 @@ figcaption {
     margin: 36px 0;
     letter-spacing: 0.025em;
   }
+  .intro-detail {
+    display: block;
+  }
   .intro-bottom {
     display: block;
   }
