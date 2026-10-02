@@ -52,6 +52,20 @@ Optional Markdown notes can follow the description. No headings or completion da
 
 Only title, a one-to-ten-sentence description, a hero image, and descriptive `alt` text for every project picture are required. Add one `gallery` entry per picture; its visible caption and order are optional. Completion month (`YYYY-MM`), featured status, printer models, materials, flat tags, resource links, and additional Markdown notes are optional. Tags are trimmed, deduplicated, and lowercased for browsing. Material entries can include a brand and grade. Resource `type` is a free-form label and each resource needs a label and URL. Gallery order defaults to filename order. Social/search metadata uses the title, first description sentence, canonical URL, and hero image by default; optional SEO overrides are supported. `npm run check` rejects invalid metadata, descriptions outside the sentence limit, missing alt text or image references, and unsupported image files.
 
+## Brand assets
+
+The shared header uses the printer symbol and complete 3DEngelen wordmark.
+The homepage also displays the larger artwork, reduced to 160px on small
+screens. Theme-specific transparent assets follow the system color scheme
+unless the existing theme toggle has selected a light or dark override.
+
+Original logo uploads are preserved in [`docs/logo/`](docs/logo/). Run
+`npm run prepare:logos` to regenerate the cropped, transparent, lossless WebP
+derivatives in [`src/assets/logo/`](src/assets/logo/). Background keying and
+edge unmatting retain opaque foreground colors and remove the baked-in
+white/near-black backgrounds. These derivatives are committed, so normal site
+builds do not need to reprocess the source logos.
+
 ## Deployment
 
 The Pages workflow checks pull requests and deploys only pushes to `main`. In repository **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source. The default URL is `https://3dengelen.github.io/3DEngelen-portfolio/`. To move to a custom domain later, set the `SITE_URL` repository variable to its origin and `BASE_PATH` to `/` (and configure the domain in Pages settings). No Google Drive integration or credentials are needed.

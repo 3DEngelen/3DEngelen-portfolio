@@ -118,35 +118,16 @@ figcaption,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 12px;
   border-bottom: 1px solid var(--line);
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 10px;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.79rem;
-}
-.brand-mark {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  letter-spacing: -0.18em;
-  padding-right: 0.18em;
-  font-size: 1rem;
-}
-.brand-mark span {
-  font-size: 0.7rem;
-  vertical-align: super;
-}
-.brand-suffix {
-  color: var(--muted);
-  font-size: 0.65rem;
 }
 .site-header nav {
   display: flex;
@@ -175,6 +156,10 @@ figcaption,
   border-color: var(--accent);
 }
 .intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0 3vw;
+  align-items: center;
   min-height: 560px;
   padding-block: 92px 48px;
   position: relative;
@@ -203,13 +188,15 @@ h3 {
 .intro h1 {
   margin: 36px 0 40px;
   font-weight: 800;
-  font-size: clamp(3.3rem, 7.8vw, 8.5rem);
+  font-size: clamp(3rem, 6.2vw, 6rem);
 }
 .outline-text {
   color: transparent;
   -webkit-text-stroke: 1px var(--muted);
 }
 .intro-bottom {
+  grid-column: 1 / -1;
+  margin-top: 32px;
   display: flex;
   justify-content: space-between;
   gap: 2rem;
@@ -537,6 +524,11 @@ figcaption {
     gap: 2rem;
   }
 }
+@media (max-width: 800px) {
+  .intro {
+    display: block;
+  }
+}
 @media (max-width: 600px) {
   .section-shell {
     width: min(100% - 36px, 1440px);
@@ -544,19 +536,16 @@ figcaption {
   .site-header {
     padding-inline: 18px;
     height: 72px;
+    gap: 8px;
   }
   .site-header nav {
     gap: 0.8rem;
     font-size: 0.75rem;
   }
   .brand {
+    gap: 8px;
     font-size: 0.7rem;
   }
-  .brand-mark {
-    width: 32px;
-    height: 32px;
-  }
-  .brand-suffix,
   .theme-label {
     display: none;
   }

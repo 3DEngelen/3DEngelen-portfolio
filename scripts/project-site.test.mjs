@@ -138,6 +138,29 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(listing, /alt="A black workshop organizer holding hex keys"/);
   assert.match(home, /Workshop organizer/);
   assert.match(home, /href="#listing-title"/);
+  for (const page of [home, about, listing, detail, minimal]) {
+    const header = page.split('<header')[1]?.split('</header>')[0];
+    assert.match(header, /aria-label="3DEngelen home"/);
+    assert.match(header, /class="logo-icon/);
+    assert.match(header, /class="logo-wordmark/);
+    assert.match(header, /light-icon/);
+    assert.match(header, /dark-icon/);
+    assert.match(header, /light-wordmark/);
+    assert.match(header, /dark-wordmark/);
+    assert.doesNotMatch(page, /prototype-switcher|Logo design preview/);
+  }
+  assert.match(home, /class="logo-artwork/);
+  assert.doesNotMatch(about, /class="logo-artwork/);
+  assert.doesNotMatch(listing, /class="logo-artwork/);
+  const logoAssets = [...home.matchAll(/src="([^"]*\/_astro\/[^"]+\.webp)"/g)];
+  assert.ok(logoAssets.length >= 6, 'All theme-specific logos are emitted');
+  for (const match of logoAssets) {
+    const assetPath = new URL(match[1], 'https://example.com').pathname;
+    assert.ok(
+      (await readFile(join(site, 'dist', assetPath))).length > 0,
+      `Built logo asset exists: ${assetPath}`,
+    );
+  }
   assert.match(about, /I'm the maker behind 3DEngelen, based in Belgium/);
   assert.match(about, /background in software engineering/);
   assert.match(about, /functional prints, ambitious projects/);
