@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare:logos": "node scripts/prepare-logo-assets.mjs",
     "prepare:projects": "node scripts/prepare-projects.mjs",
     "dev": "npm run prepare:projects && astro dev --host 0.0.0.0",
     "check": "npm run prepare:projects && astro check",

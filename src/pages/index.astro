@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectCarousel from '../components/ProjectCarousel.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
+import ThemeLogo from '../components/ThemeLogo.astro';
 import { allProjects, featuredProjects } from '../lib/projects';
 
 const projects = await allProjects();
@@ -21,6 +22,7 @@ const featured = featuredProjects(projects);
       <br />
       <span class="outline-text">Shared in detail.</span>
     </h1>
+    <ThemeLogo variant="artwork" />
     <div class="intro-bottom">
       <p>
         A collection of finished projects: the ideas, the outcomes, and the

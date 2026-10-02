@@ -1,0 +1,140 @@
+---
+import darkIcon from '../assets/logo/dark-icon.webp';
+import lightIcon from '../assets/logo/light-icon.webp';
+import darkWordmark from '../assets/logo/dark-wordmark.webp';
+import lightWordmark from '../assets/logo/light-wordmark.webp';
+import darkArtwork from '../assets/logo/dark-artwork.webp';
+import lightArtwork from '../assets/logo/light-artwork.webp';
+
+interface Props {
+  variant: 'header' | 'artwork';
+}
+
+const { variant } = Astro.props;
+---
+
+{variant === 'header' ? (
+  <>
+    <span class="logo-icon" aria-hidden="true">
+      <img
+        class="logo-light"
+        src={lightIcon.src}
+        width={lightIcon.width}
+        height={lightIcon.height}
+        alt=""
+      />
+      <img
+        class="logo-dark"
+        src={darkIcon.src}
+        width={darkIcon.width}
+        height={darkIcon.height}
+        alt=""
+      />
+    </span>
+    <span class="logo-wordmark" aria-hidden="true">
+      <img
+        class="logo-light"
+        src={lightWordmark.src}
+        width={lightWordmark.width}
+        height={lightWordmark.height}
+        alt=""
+      />
+      <img
+        class="logo-dark"
+        src={darkWordmark.src}
+        width={darkWordmark.width}
+        height={darkWordmark.height}
+        alt=""
+      />
+    </span>
+  </>
+) : (
+  <figure class="logo-artwork">
+    <img
+      class="logo-light"
+      src={lightArtwork.src}
+      width={lightArtwork.width}
+      height={lightArtwork.height}
+      alt="3DEngelen logo with a blue and orange layered print symbol"
+    />
+    <img
+      class="logo-dark"
+      src={darkArtwork.src}
+      width={darkArtwork.width}
+      height={darkArtwork.height}
+      alt="3DEngelen logo with a glowing blue and orange layered print symbol"
+    />
+    <figcaption>3DEngelen / the maker's mark</figcaption>
+  </figure>
+)}
+
+<style>
+  .logo-icon,
+  .logo-wordmark {
+    display: block;
+    flex: none;
+  }
+  .logo-icon {
+    width: 40px;
+    height: 54px;
+  }
+  .logo-wordmark {
+    width: 145px;
+  }
+  .logo-icon img,
+  .logo-wordmark img {
+    width: 100%;
+    height: auto;
+  }
+  .logo-artwork {
+    margin: 0;
+    width: min(300px, 100%);
+    justify-self: end;
+    grid-column: 2;
+    grid-row: 1 / 4;
+  }
+  .logo-artwork img {
+    width: 100%;
+    height: auto;
+  }
+  .logo-artwork figcaption {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    text-align: center;
+  }
+  .logo-dark {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    .logo-light {
+      display: none;
+    }
+    .logo-dark {
+      display: block;
+    }
+  }
+  :global(:root[data-theme='light']) .logo-light,
+  :global(:root[data-theme='dark']) .logo-dark {
+    display: block;
+  }
+  :global(:root[data-theme='light']) .logo-dark,
+  :global(:root[data-theme='dark']) .logo-light {
+    display: none;
+  }
+  @media (max-width: 800px) {
+    .logo-artwork {
+      margin: 32px auto;
+      width: 160px;
+    }
+  }
+  @media (max-width: 600px) {
+    .logo-icon {
+      width: 32px;
+      height: 43px;
+    }
+    .logo-wordmark {
+      width: clamp(76px, 24vw, 110px);
+    }
+  }
+</style>
