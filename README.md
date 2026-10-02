@@ -69,8 +69,11 @@ Listing cards retain their cropped previews.
 ## Brand assets
 
 The shared header uses the printer symbol and complete 3DEngelen wordmark.
-The homepage also displays the larger artwork, reduced to 160px on small
-screens. Its heading uses slightly expanded letter spacing at widths up to 600px to
+The homepage uses a compact introduction and reduced spacing before the first
+project section so project previews are visible without scrolling at typical
+desktop and phone viewport sizes. It also displays artwork beside the introduction,
+reduced to 120px on tablets and hidden at widths up to 600px to prioritize projects;
+the shared header logo remains visible. Its heading uses slightly expanded letter spacing at widths up to 600px to
 keep both the solid and outlined text readable. "Shared in" and "detail." always
 appear on separate lines at those widths. The outlined text paints a
 background-colored fill after its stroke to hide overlapping font contours
