@@ -54,6 +54,9 @@ Only title, a one-to-ten-sentence description, a hero image, and descriptive `al
 
 Project photos retain their proportions without cropping or stretching.
 Project pages show the introduction, then the gallery, then project notes.
+At desktop widths of 1000px and above, a compact introduction and a gallery
+no wider than 600px sit side by side, with notes below both. Mobile keeps
+the stacked layout.
 The hero photo stays in the gallery and is used for listing cards and social
 previews, rather than being repeated as a standalone photo.
 The gallery combines a swipeable full-photo view, previous/next controls, and

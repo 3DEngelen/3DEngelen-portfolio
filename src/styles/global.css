@@ -487,6 +487,39 @@ figcaption {
 .gallery {
   padding-bottom: 40px;
 }
+@media (min-width: 1000px) {
+  .project-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px);
+    gap: 32px clamp(32px, 5vw, 80px);
+    align-items: start;
+    padding-top: 32px;
+  }
+  .project-page > .back-link,
+  .project-page > .project-body {
+    grid-column: 1 / -1;
+  }
+  .project-header {
+    margin: 0;
+  }
+  .project-header h1 {
+    font-size: clamp(2.6rem, 3.8vw, 4.5rem);
+    overflow-wrap: anywhere;
+  }
+  .project-deck {
+    font-size: 1.1rem;
+  }
+  .project-page > .gallery {
+    min-width: 0;
+    padding-bottom: 0;
+  }
+  .project-page > .gallery .section-heading {
+    margin-bottom: 16px;
+  }
+  .project-page > .gallery .section-heading h2 {
+    font-size: 2rem;
+  }
+}
 .about-content {
   padding-block: 96px 140px;
   display: grid;
