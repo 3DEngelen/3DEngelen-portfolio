@@ -138,10 +138,11 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(listing, /alt="A black workshop organizer holding hex keys"/);
   assert.match(home, /Workshop organizer/);
   assert.match(home, /href="#listing-title"/);
-  assert.match(about, /Creality K1C/);
-  assert.match(about, /Creality K2 Pro with CFS/);
-  assert.match(about, /Bambu Lab A1 mini/);
-  assert.match(about, /Polymaker, Bambu Lab, Creality, Landu, and Flashforge/);
+  assert.match(about, /I'm the maker behind 3DEngelen, based in Belgium/);
+  assert.match(about, /background in software engineering/);
+  assert.match(about, /functional prints, ambitious projects/);
+  assert.match(about, /This site is my workshop journal/);
+  assert.match(about, /make your own version, then it has done its job/);
   assert.match(about, /href="mailto:3DEngelen@gmail\.com"/);
   assert.doesNotMatch(about, /PLACEHOLDER/);
   const featuredSection = home
