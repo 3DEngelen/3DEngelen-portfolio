@@ -555,6 +555,7 @@ figcaption {
   }
   .intro h1 {
     margin: 36px 0;
+    letter-spacing: 0.025em;
   }
   .intro-bottom {
     display: block;
