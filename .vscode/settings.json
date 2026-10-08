@@ -1,0 +1,9 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^mkdir -p /tmp/makerspace-photos-review && unzip -o /home/node/\\.vscode-remote/data/agentSessionData/dabce6b8-ae8a-4b71-83b6-846e8093aa13/attachments/01915051-9d4c-4fce-915d-63bc11930cb7/makerspace_edited_photos\\.zip -d /tmp/makerspace-photos-review$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "command": true
+    }
+}
