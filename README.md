@@ -10,6 +10,26 @@ Run `npm run check` to validate project content and Astro types, `npm run format
 
 Run `npm test` for focused project-image validation tests. The optional APM manifest pins the upstream `context-authoring` skill for work on agent/skill definitions; it is not required for site development or builds. If using APM, run `apm install --frozen --target copilot` to install from `apm.lock.yaml` after reviewing the upstream package. The source is [JanDeDobbeleer/agentic](https://github.com/JanDeDobbeleer/agentic/tree/main/skills/context-authoring) (MIT); the other considered upstream skills were not installed because their cross-project editing or Markdown rules do not fit this site.
 
+### Homepage carousel
+
+The homepage uses the selected cinematic-fade design: a steady introduction
+beside uncropped project hero photos, with the full project listing below.
+It includes up to five projects, prioritizing featured projects.
+Photos and captions crossfade over one second and rotate every seven seconds.
+Pause/play, previous/next, and direct project controls are keyboard accessible.
+Hovering pauses rotation temporarily; keyboard focus or manual navigation stops
+it until the visitor explicitly selects Play. Rotation also suspends while
+offscreen or the tab is hidden. Reduced-motion users start paused and see
+instant changes instead of animation.
+
+Without JavaScript, the first photo and its project link remain visible, controls
+stay hidden, and all projects are available in the listing. With zero projects,
+the introduction remains; with one, there is no rotation or unnecessary controls.
+The first hero image loads eagerly; subsequent images load lazily.
+The original three previews are archived on the local `prototype/hero-motion`
+branch; the comparison switcher is not part of the production homepage. See the
+[motion research and rationale](docs/research/hero-motion-prototype.md).
+
 ### GitHub CLI in Codespaces
 
 The devcontainer installs GitHub CLI (`gh`). Codespaces supplies GitHub authentication for the repository; opening the same Codespace from another computer does not require copying a token or relying on that computer's browser cookies. Git commits are local; pushes and PR creation require GitHub access.
@@ -69,15 +89,10 @@ Listing cards retain their cropped previews.
 ## Brand assets
 
 The shared header uses the printer symbol and complete 3DEngelen wordmark.
-The homepage uses a compact introduction and reduced spacing before the first
-project section so project previews are visible without scrolling at typical
-desktop and phone viewport sizes. It also displays artwork beside the introduction,
-reduced to 120px on tablets and hidden at widths up to 600px to prioritize projects;
-the shared header logo remains visible. Its heading uses slightly expanded letter spacing at widths up to 600px to
-keep both the solid and outlined text readable. "Shared in" and "detail." always
-appear on separate lines at those widths. The outlined text paints a
-background-colored fill after its stroke to hide overlapping font contours
-on mobile without changing the typeface. Theme-specific transparent assets follow the system color scheme
+The homepage pairs its introduction with the cinematic project-photo carousel
+on desktop and stacks them on mobile. The shared header logo remains visible;
+project photos replace the standalone introduction artwork.
+Theme-specific transparent assets follow the system color scheme
 unless the existing theme toggle has selected a light or dark override.
 
 Original logo uploads are preserved in [`docs/logo/`](docs/logo/). Run

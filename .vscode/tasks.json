@@ -47,6 +47,14 @@
       },
       "dependsOn": "GitHub: verify Codespaces authentication",
       "problemMatcher": []
+    },
+    {
+      "label": "Preview: portfolio",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "isBackground": true,
+      "problemMatcher": []
     }
   ]
 }
