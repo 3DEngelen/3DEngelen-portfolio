@@ -164,11 +164,11 @@ test('builds a minimal project page and concise listing card', async (t) => {
     assert.match(header, /dark-wordmark/);
     assert.doesNotMatch(page, /prototype-switcher|Logo design preview/);
   }
-  assert.match(home, /class="logo-artwork/);
-  assert.doesNotMatch(about, /class="logo-artwork/);
-  assert.doesNotMatch(listing, /class="logo-artwork/);
+  for (const page of [home, about, listing, detail, minimal]) {
+    assert.doesNotMatch(page, /class="logo-artwork/);
+  }
   const logoAssets = [...home.matchAll(/src="([^"]*\/_astro\/[^"]+\.webp)"/g)];
-  assert.ok(logoAssets.length >= 6, 'All theme-specific logos are emitted');
+  assert.ok(logoAssets.length >= 4, 'All header logo variants are emitted');
   for (const match of logoAssets) {
     const assetPath = new URL(match[1], 'https://example.com').pathname;
     assert.ok(
@@ -184,10 +184,10 @@ test('builds a minimal project page and concise listing card', async (t) => {
   assert.match(about, /href="mailto:3DEngelen@gmail\.com"/);
   assert.doesNotMatch(about, /PLACEHOLDER/);
   const featuredSection = home
-    .split('<section class="carousel-section')[1]
+    .split('<section class="project-hero')[1]
     ?.split('</section>')[0];
   assert.match(featuredSection, /Workshop organizer/);
-  assert.doesNotMatch(featuredSection, /Simple hook/);
+  assert.match(featuredSection, /Simple hook/);
   assert.match(minimal, /Simple hook/);
   assert.match(minimal, /project-body--metadata-only/);
   assert.doesNotMatch(minimal, /class="prose"/);
