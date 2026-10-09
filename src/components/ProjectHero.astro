@@ -1,0 +1,432 @@
+---
+import type { Project } from '../lib/projects';
+import {
+  imageUrl,
+  projectExcerpt,
+  projectImages,
+  projectUrl,
+} from '../lib/projects';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+---
+
+<section
+  class="project-hero section-shell"
+  aria-labelledby="hero-title"
+  data-project-hero
+>
+  <div class="hero-introduction">
+    <p class="eyebrow">3DENGELEN / BUILT WITH INTENT</p>
+    <h1 id="hero-title">
+      Practical ideas.
+      <br />
+      <span class="accent">Made real.</span>
+    </h1>
+    <p class="hero-lede">
+      Finished projects, thoughtful details, and everything learned along the
+      way.
+    </p>
+    <a class="text-link" href="#listing-title">
+      Explore all projects <span aria-hidden="true">↘</span>
+    </a>
+  </div>
+  {projects.length > 0 && (
+    <div
+      class="hero-gallery"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Selected projects"
+    >
+      <div class="hero-topline">
+        <span class="eyebrow">SELECTED WORK</span>
+        <span class="hero-count" data-hero-count>
+          01 / {String(projects.length).padStart(2, '0')}
+        </span>
+      </div>
+      <div class="hero-slides">
+        {projects.map((project, index) => {
+          const image = projectImages(project).hero;
+          const card = projectImages(project).card;
+          return (
+            <article
+              class:list={['hero-slide', { 'is-current': index === 0 }]}
+              data-hero-slide
+              data-title={project.data.title}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${projects.length}: ${project.data.title}`}
+              aria-hidden={index !== 0 ? 'true' : undefined}
+              inert={index !== 0}
+            >
+              <a
+                class="hero-photo"
+                href={projectUrl(project)}
+                aria-label={`View ${project.data.title}`}
+              >
+                <img
+                  src={imageUrl(image.src)}
+                  srcset={`${imageUrl(card.src)} ${card.width}w, ${imageUrl(image.src)} ${image.width}w`}
+                  sizes="(max-width: 800px) calc(100vw - 40px), 55vw"
+                  width={image.width}
+                  height={image.height}
+                  alt={image.alt}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={index === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                />
+                <span class="hero-photo-link" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              <div class="hero-caption">
+                <p class="eyebrow">
+                  {project.data.tags.slice(0, 2).join(' / ') ||
+                    'FINISHED PROJECT'}
+                </p>
+                <h2>
+                  <a href={projectUrl(project)}>{project.data.title}</a>
+                </h2>
+                <p>{projectExcerpt(project)}</p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      {projects.length > 1 && (
+        <div class="hero-controls" data-hero-controls hidden>
+          <button type="button" data-hero-play>
+            Pause rotation
+          </button>
+          <div class="hero-dots" role="group" aria-label="Choose a project">
+            {projects.map((project, index) => (
+              <button
+                type="button"
+                data-hero-index={index}
+                aria-label={`Show ${project.data.title}`}
+                aria-pressed={index === 0}
+              >
+                <span></span>
+              </button>
+            ))}
+          </div>
+          <div class="hero-arrows">
+            <button
+              type="button"
+              data-hero-step="-1"
+              aria-label="Previous project"
+            >
+              ←
+            </button>
+            <button type="button" data-hero-step="1" aria-label="Next project">
+              →
+            </button>
+          </div>
+        </div>
+      )}
+      <p
+        class="hero-announcement"
+        data-hero-announcement
+        aria-live="polite"
+        aria-atomic="true"
+      ></p>
+    </div>
+  )}
+</section>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>('[data-project-hero]')
+    .forEach((hero) => {
+      const slides = [
+        ...hero.querySelectorAll<HTMLElement>('[data-hero-slide]'),
+      ];
+      if (slides.length < 2) return;
+
+      function required<T extends HTMLElement>(selector: string) {
+        const element = hero.querySelector<T>(selector);
+        if (!element) throw new Error(`Project hero is missing ${selector}`);
+        return element;
+      }
+
+      const controls = required<HTMLElement>('[data-hero-controls]');
+      const play = required<HTMLButtonElement>('[data-hero-play]');
+      const count = required<HTMLElement>('[data-hero-count]');
+      const announcement = required<HTMLElement>('[data-hero-announcement]');
+      const dots = [
+        ...hero.querySelectorAll<HTMLButtonElement>('[data-hero-index]'),
+      ];
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      let index = 0;
+      let playing = !reducedMotion.matches;
+      let hovering = hero.matches(':hover');
+      let inView = false;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let pointerPlayIntent: boolean | undefined;
+
+      function schedule() {
+        clearTimeout(timer);
+        play.textContent = playing ? 'Pause rotation' : 'Play rotation';
+        hero.dataset.rotation =
+          playing && !hovering && inView && !document.hidden
+            ? 'playing'
+            : 'paused';
+        if (!playing || hovering || !inView || document.hidden) return;
+        timer = setTimeout(() => show(index + 1), 7000);
+      }
+
+      function show(next: number, manual = false) {
+        index = (next + slides.length) % slides.length;
+        if (manual) playing = false;
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('is-current', i === index);
+          slide.inert = i !== index;
+          slide.setAttribute('aria-hidden', String(i !== index));
+        });
+        dots.forEach((dot, i) =>
+          dot.setAttribute('aria-pressed', String(i === index)),
+        );
+        count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+        if (manual)
+          announcement.textContent = `Project ${index + 1} of ${slides.length}: ${slides[index].dataset.title}`;
+        schedule();
+      }
+
+      // Capture intent before focus pauses rotation, so the first click really pauses.
+      play.addEventListener('pointerdown', () => {
+        pointerPlayIntent = !playing;
+      });
+      play.addEventListener('pointercancel', () => {
+        pointerPlayIntent = undefined;
+      });
+      play.addEventListener('click', (event) => {
+        playing = event.detail > 0 ? (pointerPlayIntent ?? !playing) : !playing;
+        pointerPlayIntent = undefined;
+        schedule();
+      });
+      hero
+        .querySelectorAll<HTMLButtonElement>('[data-hero-step]')
+        .forEach((button) => {
+          button.addEventListener('click', () =>
+            show(index + Number(button.dataset.heroStep), true),
+          );
+        });
+      dots.forEach((dot, i) =>
+        dot.addEventListener('click', () => show(i, true)),
+      );
+      hero.addEventListener('mouseenter', () => {
+        hovering = true;
+        schedule();
+      });
+      hero.addEventListener('mouseleave', () => {
+        hovering = false;
+        schedule();
+      });
+      hero.addEventListener('focusin', () => {
+        playing = false;
+        schedule();
+      });
+      document.addEventListener('visibilitychange', schedule);
+      reducedMotion.addEventListener('change', () => {
+        if (reducedMotion.matches) playing = false;
+        schedule();
+      });
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          inView = entry.isIntersecting;
+          schedule();
+        },
+        { threshold: 0.25 },
+      );
+      observer.observe(hero);
+      controls.hidden = false;
+      schedule();
+    });
+</script>
+
+<style>
+  .project-hero {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 6vw;
+    align-items: center;
+    padding-block: 44px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-introduction h1 {
+    font-size: clamp(2.8rem, 5.5vw, 5.5rem);
+    margin-block: 20px;
+  }
+  .hero-lede {
+    max-width: 30rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .hero-gallery {
+    min-width: 0;
+  }
+  .hero-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .hero-topline .eyebrow {
+    margin: 0;
+  }
+  .hero-count {
+    font:
+      0.7rem ui-monospace,
+      monospace;
+    color: var(--muted);
+  }
+  .hero-slides {
+    position: relative;
+    display: grid;
+  }
+  .hero-slide {
+    grid-area: 1 / 1;
+    min-width: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 1000ms ease,
+      visibility 1000ms;
+  }
+  .hero-slide.is-current {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+  }
+  .hero-photo {
+    position: relative;
+    display: block;
+    background: var(--image-bg);
+    overflow: hidden;
+    height: clamp(240px, 30vw, 430px);
+  }
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .hero-photo-link {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    background: var(--bg);
+    color: var(--text);
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+  }
+  .hero-caption {
+    padding-top: 20px;
+  }
+  .hero-caption .eyebrow {
+    margin-bottom: 10px;
+  }
+  .hero-caption h2 {
+    font-size: clamp(1.6rem, 2.5vw, 2.5rem);
+    margin-bottom: 12px;
+  }
+  .hero-caption a {
+    text-decoration: none;
+  }
+  .hero-caption a:hover {
+    color: var(--accent);
+  }
+  .hero-caption > p:last-child {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-bottom: 0;
+  }
+  .hero-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-controls button {
+    border: 1px solid var(--line);
+    color: var(--text);
+    background: none;
+    min-height: 44px;
+    cursor: pointer;
+  }
+  .hero-controls button:hover {
+    border-color: var(--accent);
+  }
+  [data-hero-play] {
+    padding-inline: 12px;
+    font-size: 0.75rem;
+  }
+  .hero-dots,
+  .hero-arrows {
+    display: flex;
+    gap: 4px;
+  }
+  .hero-dots button {
+    width: 36px;
+    border: 0;
+    display: grid;
+    place-items: center;
+  }
+  .hero-dots span {
+    height: 3px;
+    width: 22px;
+    background: var(--line);
+  }
+  .hero-dots [aria-pressed='true'] span {
+    background: var(--accent);
+  }
+  .hero-arrows button {
+    width: 44px;
+  }
+  .hero-announcement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  @media (max-width: 800px) {
+    .project-hero {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .hero-introduction h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+    }
+  }
+  @media (max-width: 480px) {
+    .project-hero {
+      padding-top: 28px;
+    }
+    .hero-controls {
+      gap: 8px;
+    }
+    .hero-dots button {
+      width: 28px;
+    }
+    .hero-dots span {
+      width: 18px;
+    }
+    [data-hero-play] {
+      padding-inline: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide {
+      transition: none;
+    }
+  }
+  :global(.project-hero ~ .listing) {
+    padding-top: 48px;
+  }
+</style>
